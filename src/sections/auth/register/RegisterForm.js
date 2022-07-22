@@ -3,24 +3,19 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 // form
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+
 // @mui
 import { Stack, IconButton, InputAdornment, TextField, OutlinedInput, InputLabel } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
-import { ethers } from 'ethers';
+
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-import FormLabel from '@mui/material/FormLabel';
-import Iconify from '../../../components/Iconify';
-import { FormProvider, RHFTextField } from '../../../components/hook-form';
-import { ABI, address } from '../../../ABI';
+import { getAuthContract } from '../../../common';
 
 // ----------------------------------------------------------------------
 const md5 = require('md5');
@@ -71,34 +66,35 @@ export default function RegisterForm() {
       return;
     }
     setLoading(true);
-    const provider = new ethers.providers.JsonRpcProvider(
-      'https://rinkeby.infura.io/v3/9121f4f2d407459fae297e052b1e022b'
-    );
-    const signer = new ethers.Wallet('ab6e71c8c01939f49eb256be099b70ea8793f7093903cb1e731b6b62049d4a24', provider);
 
-    const contract = new ethers.Contract(address, ABI, signer);
-    console.log(contract);
     if (value === 'individual') {
-      contract
+      getAuthContract()
         .registerUser(nin, fname, lname, email, phone, md5(password))
         .then((res) => {
+          localStorage.setItem('i_email', email);
+          localStorage.setItem('token', 'vG7d5npE5H');
           setLoading(false);
           toast.success('Registration Successfully');
-          navigate('/dashboard', { replace: true });
+
+          navigate('/dashboard/app', { replace: true });
         })
         .catch((error) => {
           setLoading(false);
           toast.error(error.error.reason);
         });
     } else {
-      contract
+      getAuthContract()
         .registerCompany(tin, companyName, email, phone, md5(password))
         .then((res) => {
+          console.log(res);
           setLoading(false);
+          localStorage.setItem('i_email', email);
+          localStorage.setItem('token', 'vG7d5npE5H');
           toast.success('Registration Successfully');
-          navigate('/dashboard', { replace: true });
+          navigate('/dashboard/app', { replace: true });
         })
         .catch((error) => {
+          console.log(error);
           setLoading(false);
           toast.error(error.error.reason);
         });

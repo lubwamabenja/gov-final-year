@@ -13,34 +13,55 @@ const navConfig = [
   },
   {
     title: 'user',
-    path: '/dashboard/user',
+    path: '/dashboard',
     icon: getIcon('eva:people-fill'),
   },
   {
-    title: 'product',
-    path: '/dashboard/products',
+    title: 'UMEME Payments',
+    path: '/dashboard/umeme',
+    icon: getIcon('eva:shopping-bag-fill'),
+  },
+
+  {
+    title: 'Water Payments',
+    path: '/dashboard/umeme',
     icon: getIcon('eva:shopping-bag-fill'),
   },
   {
-    title: 'blog',
-    path: '/dashboard/blog',
-    icon: getIcon('eva:file-text-fill'),
+    title: 'Taxes',
+    path: '/dashboard/umeme',
+    icon: getIcon('eva:shopping-bag-fill'),
   },
   {
-    title: 'login',
-    path: '/login',
-    icon: getIcon('eva:lock-fill'),
+    title: 'Penalties',
+    path: '/dashboard/umeme',
+    icon: getIcon('eva:shopping-bag-fill'),
   },
   {
-    title: 'register',
-    path: '/register',
-    icon: getIcon('eva:person-add-fill'),
+    title: 'Donations',
+    path: '/dashboard/umeme',
+    icon: getIcon('eva:shopping-bag-fill'),
   },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: getIcon('eva:alert-triangle-fill'),
-  },
+  // {
+  //   title: 'blog',
+  //   path: '/dashboard/blog',
+  //   icon: getIcon('eva:file-text-fill'),
+  // },
+  // {
+  //   title: 'login',
+  //   path: '/login',
+  //   icon: getIcon('eva:lock-fill'),
+  // },
+  // {
+  //   title: 'register',
+  //   path: '/register',
+  //   icon: getIcon('eva:person-add-fill'),
+  // },
+  // {
+  //   title: 'Not found',
+  //   path: '/404',
+  //   icon: getIcon('eva:alert-triangle-fill'),
+  // },
 ];
 
 export default navConfig;

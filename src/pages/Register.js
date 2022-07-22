@@ -1,4 +1,5 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Card, Link, Container, Typography } from '@mui/material';
@@ -10,6 +11,7 @@ import Logo from '../components/Logo';
 // sections
 import { RegisterForm } from '../sections/auth/register';
 import AuthSocial from '../sections/auth/AuthSocial';
+import { getToken } from '../common';
 
 // ----------------------------------------------------------------------
 
@@ -61,6 +63,15 @@ export default function Register() {
 
   const mdUp = useResponsive('up', 'md');
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isAuth = getToken();
+    if (isAuth) {
+      navigate('/dashboard/app');
+    }
+  }, []);
+
   return (
     <Page title="Register">
       <RootStyle>
@@ -79,7 +90,7 @@ export default function Register() {
         {mdUp && (
           <SectionStyle>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Manage the job more effectively with Minimal
+              Manage the Payments more effectively with GFATFIS
             </Typography>
             <img alt="register" src="/static/illustrations/illustration_register.png" />
           </SectionStyle>
