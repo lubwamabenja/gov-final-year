@@ -61,7 +61,7 @@ export default function RegisterForm() {
     event.preventDefault();
     setValidation(true);
     if (value === 'company') {
-      if (tin === '' || companyName === '' || phone === '' || email || password === '') {
+      if (tin === '' || companyName === '' || phone === '' || email === '' || password === '') {
         toast.error('Please fill in all required fields');
         return;
       }
@@ -81,6 +81,18 @@ export default function RegisterForm() {
     if (value === 'individual') {
       contract
         .registerUser(nin, fname, lname, email, phone, md5(password))
+        .then((res) => {
+          setLoading(false);
+          toast.success('Registration Successfully');
+          navigate('/dashboard', { replace: true });
+        })
+        .catch((error) => {
+          setLoading(false);
+          toast.error(error.error.reason);
+        });
+    } else {
+      contract
+        .registerCompany(tin, companyName, email, phone, md5(password))
         .then((res) => {
           setLoading(false);
           toast.success('Registration Successfully');

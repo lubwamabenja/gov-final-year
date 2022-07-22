@@ -1,4 +1,4 @@
-export const address = '0xa715d88a63C6198F7957BBCb5AED4D506876Ae76';
+export const address = '0x6CF63277F81fFE733Bbc7C8463170f7fA7147C9a';
 
 export const ABI = [
   {
@@ -24,6 +24,45 @@ export const ABI = [
     ],
     name: 'OwnershipTransferred',
     type: 'event',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'i_tin',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'i_companyName',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'i_email',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'i_phone',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'i_pass',
+        type: 'string',
+      },
+    ],
+    name: 'registerCompany',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     inputs: [
@@ -90,72 +129,6 @@ export const ABI = [
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'string',
-        name: 'i_email',
-        type: 'string',
-      },
-    ],
-    name: 'getUserByEmail',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'id',
-            type: 'uint256',
-          },
-          {
-            internalType: 'string',
-            name: 'nin',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'fName',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'lName',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'email',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'phone',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'password',
-            type: 'string',
-          },
-          {
-            internalType: 'bool',
-            name: 'active',
-            type: 'bool',
-          },
-          {
-            internalType: 'bool',
-            name: 'isLoggedIn',
-            type: 'bool',
-          },
-        ],
-        internalType: 'struct Individual.User',
-        name: '',
-        type: 'tuple',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'getUsers',
     outputs: [
@@ -165,6 +138,21 @@ export const ABI = [
             internalType: 'uint256',
             name: 'id',
             type: 'uint256',
+          },
+          {
+            internalType: 'string',
+            name: 'userType',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'tin',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'companyName',
+            type: 'string',
           },
           {
             internalType: 'string',
