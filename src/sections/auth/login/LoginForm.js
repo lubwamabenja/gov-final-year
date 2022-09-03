@@ -1,9 +1,10 @@
+import * as Yup from 'yup';
 import { useState } from 'react';
-
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 // form
-
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+// @mui
 // @mui
 import {
   Link,
@@ -19,7 +20,10 @@ import { LoadingButton } from '@mui/lab';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // components
+import Iconify from '../../../components/Iconify';
 import { getAuthContract } from '../../../common';
+import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
+import { toast } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 const md5 = require('md5');
@@ -28,9 +32,40 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
+
+  const [tin, setTin] = useState('');
   const [password, setPassword] = useState('');
   const [validation, setValidation] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setValidation(true);
+
+    if (tin === '' || password === '') {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+    setLoading(true);
+
+    getAuthContract()
+      .login(tin, md5(password))
+      .then((res) => {
+        localStorage.setItem('i_tin', tin);
+        localStorage.setItem('token', 'vG7d5npE5H');
+        setLoading(false);
+
+        navigate('/dashboard/app');
+        window.location.reload();
+      })
+      .catch((error) => {
+        setLoading(false);
+        // console.log(error.reason);
+        toast.error(error.reason);
+      });
+    // navigate('/dashboard', { replace: true });
+  };
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -39,47 +74,19 @@ export default function LoginForm() {
     event.preventDefault();
   };
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setValidation(true);
-    console.log(email, password);
-    if (email === '' || password === '') {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-    setIsSubmitting(true);
-
-    getAuthContract()
-      .login(email, md5(password))
-      .then((res) => {
-        console.log(res);
-        localStorage.setItem('i_email', email);
-        localStorage.setItem('token', 'vG7d5npE5H');
-        setIsSubmitting(false);
-        navigate('/dashboard/app');
-      })
-      .catch((error) => {
-        setIsSubmitting(false);
-        // console.log(error.reason);
-        toast.error(error.reason);
-      });
-  };
-
   return (
     <form onSubmit={handleSubmit}>
       <Stack spacing={3}>
         <TextField
-          id="email"
-          label="Email"
+          id="tin"
+          label="TIN"
           fullWidth
-          value={email}
+          value={tin}
           onChange={(e) => {
-            setEmail(e.target.value);
+            setTin(e.target.value);
           }}
-          error={validation && email === ''}
-          helperText={validation && email === '' ? 'Please enter a valid email' : ''}
+          error={validation && tin === ''}
+          helperText={validation && tin === '' ? 'Please enter a valid tin' : ''}
         />
 
         <FormControl fullWidth variant="outlined">
@@ -114,7 +121,7 @@ export default function LoginForm() {
         </Link>
       </Stack>
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+      <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={loading}>
         Login
       </LoadingButton>
     </form>

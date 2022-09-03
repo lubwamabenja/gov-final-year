@@ -1,5 +1,4 @@
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Card, Link, Container, Typography } from '@mui/material';
@@ -11,7 +10,6 @@ import Logo from '../components/Logo';
 // sections
 import { RegisterForm } from '../sections/auth/register';
 import AuthSocial from '../sections/auth/AuthSocial';
-import { getToken } from '../common';
 
 // ----------------------------------------------------------------------
 
@@ -63,72 +61,67 @@ export default function Register() {
 
   const mdUp = useResponsive('up', 'md');
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const isAuth = getToken();
-    if (isAuth) {
-      navigate('/dashboard/app');
-    }
-  }, []);
-
   return (
-    <Page title="Register">
-      <RootStyle>
-        <HeaderStyle>
-          <Logo />
-          {smUp && (
-            <Typography variant="body2" sx={{ mt: { md: -2 } }}>
-              Already have an account? {''}
-              <Link variant="subtitle2" component={RouterLink} to="/login">
-                Login
-              </Link>
-            </Typography>
-          )}
-        </HeaderStyle>
-
-        {mdUp && (
-          <SectionStyle>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Manage the Payments more effectively with GFATFIS
-            </Typography>
-            <img alt="register" src="/static/illustrations/illustration_register.png" />
-          </SectionStyle>
-        )}
-
-        <Container>
-          <ContentStyle>
-            <Typography variant="h4" gutterBottom>
-              Get started !.
-            </Typography>
-
-            <Typography sx={{ color: 'text.secondary', mb: 5 }}>Its Free.</Typography>
-
-            <RegisterForm />
-
-            <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
-              By registering, I agree to Minimal&nbsp;
-              <Link underline="always" color="text.primary" href="#">
-                Terms of Service
-              </Link>
-              {''}and{''}
-              <Link underline="always" color="text.primary" href="#">
-                Privacy Policy
-              </Link>
-              .
-            </Typography>
-
-            {!smUp && (
-              <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
-                Already have an account?{' '}
-                <Link variant="subtitle2" to="/login" component={RouterLink}>
+    <>
+      <Page title="Register">
+        <RootStyle>
+          <HeaderStyle>
+            <Logo />
+            {smUp && (
+              <Typography variant="body2" sx={{ mt: { md: -2 } }}>
+                Already have an account? {''}
+                <Link variant="subtitle2" component={RouterLink} to="/login">
                   Login
                 </Link>
               </Typography>
             )}
-          </ContentStyle>
-        </Container>
-      </RootStyle>
-    </Page>
+          </HeaderStyle>
+
+          {mdUp && (
+            <SectionStyle>
+              <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+                Manage the Payments more effectively with Uganda Pay
+              </Typography>
+              <img alt="register" src="/static/illustrations/illustration_register.png" />
+            </SectionStyle>
+          )}
+
+          <Container>
+            <ContentStyle>
+              <Typography variant="h4" gutterBottom>
+                Get started absolutely free.
+              </Typography>
+
+              <Typography sx={{ color: 'text.secondary', mb: 5 }}>Free forever. No credit card needed.</Typography>
+
+              <AuthSocial />
+
+              <RegisterForm />
+
+              <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
+                By registering, I agree to Minimal&nbsp;
+                <Link underline="always" color="text.primary" href="#">
+                  Terms of Service
+                </Link>
+                {''}and{''}
+                <Link underline="always" color="text.primary" href="#">
+                  Privacy Policy
+                </Link>
+                .
+              </Typography>
+
+              {!smUp && (
+                <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
+                  Already have an account?{' '}
+                  <Link variant="subtitle2" to="/login" component={RouterLink}>
+                    Login
+                  </Link>
+                </Typography>
+              )}
+            </ContentStyle>
+          </Container>
+        </RootStyle>
+      </Page>
+    </>
   );
 }

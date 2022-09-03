@@ -1,65 +1,39 @@
 import { Navigate, useRoutes } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
-import { getToken, getEmail, getAuthContract } from './common';
+import { getToken, getEmail, getAuthContract, getTin } from './common';
 //
 import Blog from './pages/Blog';
-import User from './pages/User';
+import RecentTransactions from './pages/RecentTransactions';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
-
+import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 // ----------------------------------------------------------------------
 
 export default function Router() {
   const [profile, setProfile] = useState({});
-  const [balance, setBalance] = useState({});
 
-  const getBalance = () => {
+  //============GET USER PROFILE ========================
+  const getProfile = () => {
+    let myuuid = uuidv4();
+    console.log(myuuid);
     getAuthContract()
-      .getBalance(getEmail())
+      .getUserByTin(getTin())
       .then((res) => {
         console.log(res);
-        setBalance({
-          umeme: res[1].toString(),
-          water: res[2].toString(),
-          taxes: res[3].toString(),
-          penalties: res[4].toString(),
+        setProfile({
+          name: res[2] + ' ' + res[1],
+          email: res[3],
+          tin: res[4],
+          role: res[6],
         });
       })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
-  const getProfile = () => {
-    getAuthContract()
-      .getProfile(getEmail())
-      .then((res) => {
-        if (res[1] === 'individual') {
-          setProfile({
-            type: res[1],
-            nin: res[4],
-            fname: res[5],
-            lname: res[6],
-            email: res[7],
-            phone: res[8],
-          });
-        } else {
-          setProfile({
-            type: res[1],
-            tin: res[2],
-            companyName: res[3],
-            email: res[7],
-            phone: res[8],
-          });
-        }
-        console.log(res[1]);
-      })
       .catch((err) => {
         console.log(err);
       });
@@ -67,16 +41,16 @@ export default function Router() {
 
   useEffect(() => {
     getProfile();
-    getBalance();
   }, []);
+
   return useRoutes([
     {
       path: '/dashboard',
-      element: getToken() ? <DashboardLayout /> : <Navigate to="/login" />,
+      element: getTin() ? <DashboardLayout profile={profile} /> : <Navigate to="/login" />,
       children: [
-        { path: 'app', element: <DashboardApp profile={profile} balance={balance} /> },
-        { path: 'user', element: <User profile={profile} /> },
-        { path: 'umeme', element: <Products profile={profile} /> },
+        { path: 'app', element: <DashboardApp profile={profile} /> },
+        { path: 'user', element: <RecentTransactions profile={profile} /> },
+        { path: 'products', element: <Products profile={profile} /> },
         { path: 'blog', element: <Blog profile={profile} /> },
       ],
     },
@@ -84,13 +58,16 @@ export default function Router() {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/app" /> },
-        { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
+        { path: '/', element: getTin() ? <Navigate to="/dashboard/app" /> : <Navigate to="/login" /> },
+        { path: 'login', element: getTin() ? <Navigate to="/dashboard/app" /> : <Login /> },
+        { path: 'register', element: getTin() ? <Navigate to="/dashboard/app" /> : <Register /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
     },
-    { path: '*', element: <Navigate to="/404" replace /> },
+    {
+      path: '*',
+      element: <Navigate to="/404" replace />,
+    },
   ]);
 }

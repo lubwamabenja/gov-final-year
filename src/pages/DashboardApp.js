@@ -1,6 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { BsLightbulb } from 'react-icons/bs';
-
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
@@ -22,52 +20,36 @@ import {
 
 // ----------------------------------------------------------------------
 
-export default function DashboardApp({ profile, balance }) {
+export default function DashboardApp({ profile }) {
   const theme = useTheme();
 
-  console.log(balance);
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi {profile.type === 'individual' ? `${profile.fname}` : profile.companyName}, Welcome back
+          Hi <span style={{ color: 'green' }}>{profile.name} </span>, Welcome back
         </Typography>
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="UMEME Bills" total={parseInt(balance.umeme, 10)} icon={'ant-design:bulb-filled'} />
+            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Water Bills"
-              total={parseInt(balance.water, 10)}
-              color="info"
-              icon={'ant-design:aliwangwang-filled'}
-            />
+            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Taxes"
-              total={parseInt(balance.taxes, 10)}
-              color="warning"
-              icon={'ant-design:bank-outlined'}
-            />
+            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Penalties"
-              total={parseInt(balance.penalties, 10)}
-              color="error"
-              icon={'ant-design:appstore-outlined'}
-            />
+            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits
-              title="Payments"
+              title="Website Visits"
               subheader="(+43%) than last year"
               chartLabels={[
                 '01/01/2003',
@@ -84,29 +66,22 @@ export default function DashboardApp({ profile, balance }) {
               ]}
               chartData={[
                 {
-                  name: 'UMEME Bills',
+                  name: 'Team A',
                   type: 'column',
                   fill: 'solid',
                   data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
                 },
                 {
-                  name: 'Water Bills',
+                  name: 'Team B',
                   type: 'area',
                   fill: 'gradient',
                   data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
                 },
                 {
-                  name: 'Taxes',
+                  name: 'Team C',
                   type: 'line',
                   fill: 'solid',
                   data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
-                },
-
-                {
-                  name: 'Penalties',
-                  type: 'line',
-                  fill: 'solid',
-                  data: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
                 },
               ]}
             />
@@ -114,12 +89,12 @@ export default function DashboardApp({ profile, balance }) {
 
           <Grid item xs={12} md={6} lg={4}>
             <AppCurrentVisits
-              title="Payments"
+              title="Current Visits"
               chartData={[
-                { label: 'UMEME Bills', value: 4344 },
-                { label: 'Water Bills', value: 5435 },
-                { label: 'Taxes', value: 1443 },
-                { label: 'Penalties', value: 4443 },
+                { label: 'America', value: 4344 },
+                { label: 'Asia', value: 5435 },
+                { label: 'Europe', value: 1443 },
+                { label: 'Africa', value: 4443 },
               ]}
               chartColors={[
                 theme.palette.primary.main,
@@ -130,7 +105,7 @@ export default function DashboardApp({ profile, balance }) {
             />
           </Grid>
 
-          {/* <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={6} lg={8}>
             <AppConversionRates
               title="Conversion Rates"
               subheader="(+43%) than last year"
@@ -147,9 +122,9 @@ export default function DashboardApp({ profile, balance }) {
                 { label: 'United Kingdom', value: 1380 },
               ]}
             />
-          </Grid> */}
+          </Grid>
 
-          {/* <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <AppCurrentSubject
               title="Current Subject"
               chartLabels={['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math']}
@@ -160,9 +135,9 @@ export default function DashboardApp({ profile, balance }) {
               ]}
               chartColors={[...Array(6)].map(() => theme.palette.text.secondary)}
             />
-          </Grid> */}
+          </Grid>
 
-          {/* <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={6} lg={8}>
             <AppNewsUpdate
               title="News Update"
               list={[...Array(5)].map((_, index) => ({
@@ -173,9 +148,9 @@ export default function DashboardApp({ profile, balance }) {
                 postedAt: faker.date.recent(),
               }))}
             />
-          </Grid> */}
+          </Grid>
 
-          {/* <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <AppOrderTimeline
               title="Order Timeline"
               list={[...Array(5)].map((_, index) => ({
@@ -232,7 +207,7 @@ export default function DashboardApp({ profile, balance }) {
                 { id: '5', label: 'Sprint Showcase' },
               ]}
             />
-          </Grid> */}
+          </Grid>
         </Grid>
       </Container>
     </Page>

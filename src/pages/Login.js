@@ -1,5 +1,4 @@
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Card, Link, Container, Typography } from '@mui/material';
@@ -11,7 +10,6 @@ import Logo from '../components/Logo';
 // sections
 import { LoginForm } from '../sections/auth/login';
 import AuthSocial from '../sections/auth/AuthSocial';
-import { getToken } from '../common';
 
 // ----------------------------------------------------------------------
 
@@ -63,15 +61,6 @@ export default function Login() {
 
   const mdUp = useResponsive('up', 'md');
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const isAuth = getToken();
-    if (isAuth) {
-      navigate('/dashboard/app');
-    }
-  }, []);
-
   return (
     <Page title="Login">
       <RootStyle>
@@ -100,7 +89,7 @@ export default function Login() {
         <Container maxWidth="sm">
           <ContentStyle>
             <Typography variant="h4" gutterBottom>
-              Sign in to GFATFIS
+              Sign in to Uganda Pay
             </Typography>
 
             <Typography sx={{ color: 'text.secondary', mb: 5 }}>Enter your details below.</Typography>
