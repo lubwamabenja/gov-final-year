@@ -12,34 +12,29 @@ const navConfig = [
     icon: getIcon('eva:pie-chart-2-fill'),
   },
   {
-    title: 'user',
-    path: '/dashboard/user',
+    title: 'All Transactions',
+    path: '/dashboard/transactions',
     icon: getIcon('eva:people-fill'),
   },
   {
-    title: 'product',
-    path: '/dashboard/products',
+    title: 'Reconciliations',
+    path: '/dashboard/reconciliations',
     icon: getIcon('eva:shopping-bag-fill'),
   },
   {
-    title: 'blog',
-    path: '/dashboard/blog',
-    icon: getIcon('eva:file-text-fill'),
+    title: 'Uganda Pay',
+    path: '/dashboard/ugandapay',
+    icon: getIcon('eva:shopping-bag-fill'),
   },
   {
-    title: 'login',
-    path: '/login',
-    icon: getIcon('eva:lock-fill'),
+    title: 'bank',
+    path: '/dashboard/bank',
+    icon: getIcon('eva:shopping-bag-fill'),
   },
   {
-    title: 'register',
-    path: '/register',
-    icon: getIcon('eva:person-add-fill'),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: getIcon('eva:alert-triangle-fill'),
+    title: 'Gov. Entities',
+    path: '/dashboard/entities',
+    icon: getIcon('eva:shopping-bag-fill'),
   },
 ];
 

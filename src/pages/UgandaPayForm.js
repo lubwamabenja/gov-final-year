@@ -17,7 +17,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { getPayContract } from '../common';
+import { getPayContract, getBankContract, getEntityContract, getReconcileContract } from '../common';
 
 import ugandaflag from './ugandaflag.jpeg';
 function UgandaPayForm({ profile }) {
@@ -51,6 +51,15 @@ function UgandaPayForm({ profile }) {
     today = mm + '/' + dd + '/' + yyyy;
     return today;
   };
+
+  const getCurrentTime = () => {
+    let today = new Date();
+    let time =
+      String(parseInt(today.getHours()) >= 10 ? today.getHours() : '0' + today.getHours()) +
+      ':' +
+      String(parseInt(today.getMinutes()) >= 10 ? today.getMinutes() : '0' + today.getMinutes());
+    return time;
+  };
   const clearFields = () => {
     setService('');
     setAmount('');
@@ -75,46 +84,134 @@ function UgandaPayForm({ profile }) {
     }
 
     setLoading(true);
-    const transaction =
-      // ========MAKE PAYMEMNT=====
-      await getPayContract().stampTransaction(
-        amount,
-        service,
-        getCurrentDate(),
-        profile.email,
-        method,
-        profile.tin,
-        commission
-      );
+
+    //******************UG PAY ***************** */
+    const transaction = await getPayContract().stampTransaction(
+      amount,
+      service,
+      getCurrentDate(),
+      profile.email,
+      method,
+      profile.tin,
+      commission,
+      getCurrentTime()
+    );
     const txreceipt = await transaction.wait(1);
-    console.log('-------', txreceipt);
+    //****************SAVE DATA IN VARIABLES****************
+    let account_tp = account;
+    let bank_tp = method;
+    let ammount_tp = amount;
+    let serv_tp = service;
 
-    // ------------------------------GET ID=====
-    getPayContract()
+    setMessage('');
+    setLoading(false);
+    clearFields();
+    setValidation(false);
+    toast.success('Your Payment Was Successful');
+
+    // ***************BANK STAMPS TX***********************
+    const bankTx = await getBankContract().stampTransaction(
+      profile.tin,
+      profile.email,
+      account_tp,
+      bank_tp,
+      serv_tp,
+      commission,
+      getCurrentDate(),
+      ammount_tp,
+      getCurrentTime()
+    );
+    const banktxreceipt = await bankTx.wait(1);
+    console.log('******BANK STAMP******', banktxreceipt.transactionHash);
+    // ****************GET BANK COUNTER****************
+    getBankContract()
       .getCounter()
-      .then(async (counter) => {
-        // ========TRANSACTION HASH=====
-        setMessage('Updating hash.......');
+      .then(async (count) => {
+        console.log('-----', parseInt(count.toString()) - 1);
+        const bankUpdTx = await getBankContract().updateTxHash(
+          parseInt(count.toString()) - 1,
+          banktxreceipt.blockNumber.toString(),
+          banktxreceipt.transactionHash
+        );
+        const bankUpdReceipt = await bankUpdTx.wait(1);
+        console.log('******BANK UPDATE HASH******', bankUpdReceipt.transactionHash);
 
-        getPayContract()
-          .updateTxHash(parseInt(counter.toString()) - 1, txreceipt.blockNumber.toString(), txreceipt.transactionHash)
-          .then((upd) => {
-            console.log('Updating hash...', upd);
-            setMessage('');
-            setLoading(false);
-            clearFields();
-            setValidation(false);
-            toast.success('Your Payment Was Successful');
+        // ***************ENTITY STAMPS TX***********************
+        const entityTx = await getEntityContract().stampTransaction(
+          profile.tin,
+          serv_tp,
+          profile.email,
+          profile.name,
+          account_tp,
+          bank_tp,
+          getCurrentDate(),
+          ammount_tp,
+          getCurrentTime()
+        );
+        const entitytxreceipt = await entityTx.wait(1);
+        console.log('******ENTITY STAMP******', entitytxreceipt.transactionHash);
+        // ****************GET ENTITY COUNTER****************
+        getEntityContract()
+          .getCounter()
+          .then(async (count) => {
+            console.log('-----', parseInt(count.toString()) - 1);
+            const entityUpdTx = await getEntityContract().updateTxHash(
+              parseInt(count.toString()) - 1,
+              entitytxreceipt.blockNumber.toString(),
+              entitytxreceipt.transactionHash
+            );
+            const entityUpdReceipt = await entityUpdTx.wait(1);
+            console.log('******ENTITY UPDATE HASH******', entityUpdReceipt.transactionHash);
+
+            // ***************ADD RECONCILED***********************
+            const reconcileTx = await getReconcileContract().addReconciled(
+              ammount_tp,
+              commission,
+              profile.tin,
+              txreceipt.transactionHash,
+              banktxreceipt.transactionHash,
+              entitytxreceipt.transactionHash,
+              bank_tp,
+              service,
+              getCurrentDate(),
+              getCurrentTime()
+            );
+            const reconciletxreceipt = await reconcileTx.wait(1);
+            console.log('******RECONCILE STAMP******', reconciletxreceipt.transactionHash);
+
+            // *************UPDATE UGANDA PAY=====
+            getPayContract()
+              .getCounter()
+              .then(async (counter) => {
+                console.log('NUM', parseInt(counter.toString()) - 1);
+                // ****************UPDATE STATUS UGANDA PAY****************
+
+                // ========updating hash and block number=======
+                getPayContract()
+                  .updateTxHash(
+                    parseInt(counter.toString()) - 1,
+                    txreceipt.blockNumber.toString(),
+                    txreceipt.transactionHash
+                  )
+                  .then(async (upd) => {
+                    console.log('******UPDATE UGANDA PAY******');
+                  })
+                  .catch((er) => {
+                    console.log(er);
+                  });
+              })
+              .catch((err) => {
+                setLoading(false);
+                setValidation(false);
+                console.log(err);
+              });
           })
-          .catch((er) => {
-            setLoading(false);
-            console.log(er);
+          .catch((err) => {
+            console.log('******', err);
           });
       })
       .catch((err) => {
-        setLoading(false);
-        setValidation(false);
-        console.log(err);
+        console.log('******', err);
       });
   };
 
@@ -176,6 +273,7 @@ function UgandaPayForm({ profile }) {
                 <MenuItem value={'stanbic'}>Stanbic</MenuItem>
                 <MenuItem value={'dfcu'}>DFCU</MenuItem>
                 <MenuItem value={'equity'}>Equity</MenuItem>
+                <MenuItem value={'centenary'}>Centenary</MenuItem>
               </Select>
             </FormControl>
           </div>

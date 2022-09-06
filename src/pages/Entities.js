@@ -30,7 +30,7 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
-import { getPayContract, numberWithCommas } from '../common';
+import { getEntityContract, numberWithCommas } from '../common';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +41,7 @@ const TABLE_HEAD = [
   { id: 'hash', label: 'Hash', alignRight: false },
   { id: 'block', label: 'Block', alignRight: false },
   { id: 'service', label: 'Service', alignRight: false },
+  { id: 'bank', label: 'Bank', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
 ];
@@ -76,7 +77,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function RecentTransactions() {
+export default function Entities() {
   const [page, setPage] = useState(0);
   const [transactions, setTransactions] = useState([]);
 
@@ -98,7 +99,7 @@ export default function RecentTransactions() {
   }, []);
   const getAllTransactions = () => {
     setLoading(true);
-    getPayContract()
+    getEntityContract()
       .getTransactions()
       .then((res) => {
         console.log(res);
@@ -115,11 +116,10 @@ export default function RecentTransactions() {
               email: res[i].email,
               bank: res[i].bank,
               amount: res[i].amount.toString(),
-              tin: res[i].TIN,
-              block: res[i].block_hash,
+              block: res[i].block_no,
               hash: res[i].hash,
-              commmision: res[i].commision.toString(),
               state: res[i].state,
+              account: res[i].user,
             };
             txs.push(obj);
           }
@@ -191,7 +191,7 @@ export default function RecentTransactions() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Recent Transactions
+            Gov. Entities Transactions
           </Typography>
           <Button variant="contained" to="#" onClick={refreshTransactions} startIcon={<Iconify icon="eva:plus-fill" />}>
             Refresh
@@ -221,7 +221,7 @@ export default function RecentTransactions() {
 
                   <TableBody>
                     {transactions.map((row) => {
-                      const { id, amount, bank, commision, time, block, date, email, hash, service, state, tin } = row;
+                      const { id, amount, bank, commision, block, time, date, email, hash, service, state, tin } = row;
                       const isItemSelected = selected.indexOf(tin) !== -1;
 
                       return (
@@ -239,10 +239,9 @@ export default function RecentTransactions() {
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
                               <span>{date}</span>
-                              <span> {time}</span>
+                              <span style={{ color: '#ffa500' }}> {time}</span>
                             </Stack>
                           </TableCell>
-
                           <TableCell align="left" className="text-truncate" style={{ maxWidth: '150px' }}>
                             {tin}
                           </TableCell>
@@ -261,6 +260,7 @@ export default function RecentTransactions() {
                             </a>
                           </TableCell>
                           <TableCell align="left"> {sentenceCase(service)}</TableCell>
+                          <TableCell align="left"> {sentenceCase(bank)}</TableCell>
                           <TableCell align="left">
                             <Label variant="ghost" color={(state === 'pending' && 'warning') || 'success'}>
                               {sentenceCase(state)}

@@ -1,6 +1,17 @@
 import { ethers } from 'ethers';
 
-import { userABI, userAddress, payABI, payAddress } from './abi';
+import {
+  userABI,
+  userAddress,
+  payABI,
+  payAddress,
+  bankAddress,
+  bankABI,
+  entityAddress,
+  entityABI,
+  reconcileABI,
+  reconcileAddress,
+} from './abi';
 
 // return the token from the session storage
 export const getToken = () => localStorage.getItem('token') || null;
@@ -27,5 +38,25 @@ export const getPayContract = () => {
   let provider = new ethers.providers.JsonRpcProvider(url);
   let signer = new ethers.Wallet(privateKey, provider);
   let contract = new ethers.Contract(payAddress, payABI, signer);
+  return contract;
+};
+
+export const getBankContract = () => {
+  let provider = new ethers.providers.JsonRpcProvider(url);
+  let signer = new ethers.Wallet(privateKey, provider);
+  let contract = new ethers.Contract(bankAddress, bankABI, signer);
+  return contract;
+};
+export const getEntityContract = () => {
+  let provider = new ethers.providers.JsonRpcProvider(url);
+  let signer = new ethers.Wallet(privateKey, provider);
+  let contract = new ethers.Contract(entityAddress, entityABI, signer);
+  return contract;
+};
+
+export const getReconcileContract = () => {
+  let provider = new ethers.providers.JsonRpcProvider(url);
+  let signer = new ethers.Wallet(privateKey, provider);
+  let contract = new ethers.Contract(reconcileAddress, reconcileABI, signer);
   return contract;
 };

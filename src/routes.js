@@ -5,6 +5,9 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 import { getToken, getEmail, getAuthContract, getTin } from './common';
 //
 import Blog from './pages/Blog';
+import Bank from './pages/Bank';
+import Entities from './pages/Entities';
+import Reconciliations from './pages/Reconciliations';
 import RecentTransactions from './pages/RecentTransactions';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
@@ -50,8 +53,13 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp profile={profile} /> },
         { path: 'user', element: <RecentTransactions profile={profile} /> },
+        { path: 'transactions', element: <RecentTransactions profile={profile} /> },
         { path: 'products', element: <Products profile={profile} /> },
+        { path: 'ugandapay', element: <Products profile={profile} /> },
         { path: 'blog', element: <Blog profile={profile} /> },
+        { path: 'bank', element: <Bank profile={profile} /> },
+        { path: 'entities', element: <Entities profile={profile} /> },
+        { path: 'reconciliations', element: <Reconciliations profile={profile} /> },
       ],
     },
     {

@@ -6,6 +6,7 @@ import { Card, Typography } from '@mui/material';
 import { fShortenNumber } from '../../../utils/formatNumber';
 // components
 import Iconify from '../../../components/Iconify';
+import { numberWithCommas } from '../../../common';
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +31,7 @@ AppWidgetSummary.propTypes = {
   sx: PropTypes.object,
 };
 
-export default function AppWidgetSummary({ title, total, icon, color = 'primary', sx, ...other }) {
+export default function AppWidgetSummary({ title, money, total, icon, color = 'primary', sx, ...other }) {
   return (
     <Card
       sx={{
@@ -56,7 +57,9 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
         <Iconify icon={icon} width={24} height={24} />
       </IconWrapperStyle>
 
-      <Typography variant="h3">{fShortenNumber(total)}</Typography>
+      <Typography variant="h3">
+        {money ? numberWithCommas(total).toString() + ' UGX' : fShortenNumber(total)}{' '}
+      </Typography>
 
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}
