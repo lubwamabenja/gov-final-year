@@ -218,75 +218,77 @@ export default function Reconciliations() {
                   />
 
                   <TableBody>
-                    {transactions.map((row) => {
-                      const {
-                        id,
-                        amount,
-                        bank,
-                        commision,
-                        time,
-                        ug_hash,
-                        date,
-                        bank_hash,
-                        service,
-                        service_hash,
-                        tin,
-                      } = row;
-                      const isItemSelected = selected.indexOf(tin) !== -1;
+                    {transactions.reverse().map((row, key) => {
+                      if (key < 8) {
+                        const {
+                          id,
+                          amount,
+                          bank,
+                          commision,
+                          time,
+                          ug_hash,
+                          date,
+                          bank_hash,
+                          service,
+                          service_hash,
+                          tin,
+                        } = row;
+                        const isItemSelected = selected.indexOf(tin) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, tin)} />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <span>{date}</span>
-                              <span style={{ color: '#ffa500' }}> {time}</span>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left" className="text-truncate" style={{ maxWidth: '150px' }}>
-                            {tin}
-                          </TableCell>
-                          <TableCell align="left">{numberWithCommas(amount)} UGX</TableCell>
-                          <TableCell align="left" className="text-truncate" style={{ maxWidth: '200px' }}>
-                            <a href={`https://rinkeby.etherscan.io/tx/${ug_hash}`} target="_blank">
-                              {' '}
-                              {ug_hash}
-                            </a>
-                          </TableCell>
+                        return (
+                          <TableRow
+                            hover
+                            key={id}
+                            tabIndex={-1}
+                            role="checkbox"
+                            selected={isItemSelected}
+                            aria-checked={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, tin)} />
+                            </TableCell>
+                            <TableCell component="th" scope="row" padding="none">
+                              <Stack direction="row" alignItems="center" spacing={2}>
+                                <span>{date}</span>
+                                <span style={{ color: '#ffa500' }}> {time}</span>
+                              </Stack>
+                            </TableCell>
+                            <TableCell align="left" className="text-truncate" style={{ maxWidth: '150px' }}>
+                              {tin}
+                            </TableCell>
+                            <TableCell align="left">{numberWithCommas(amount)} UGX</TableCell>
+                            <TableCell align="left" className="text-truncate" style={{ maxWidth: '200px' }}>
+                              <a href={`https://rinkeby.etherscan.io/tx/${ug_hash}`} target="_blank">
+                                {' '}
+                                {ug_hash}
+                              </a>
+                            </TableCell>
 
-                          <TableCell align="left" className="text-truncate" style={{ maxWidth: '200px' }}>
-                            <a href={`https://rinkeby.etherscan.io/tx/${bank_hash}`} target="_blank">
-                              {' '}
-                              {bank_hash}
-                            </a>
-                          </TableCell>
-                          <TableCell align="left" className="text-truncate" style={{ maxWidth: '200px' }}>
-                            <a href={`https://rinkeby.etherscan.io/tx/${service_hash}`} target="_blank">
-                              {' '}
-                              {service_hash}
-                            </a>
-                          </TableCell>
+                            <TableCell align="left" className="text-truncate" style={{ maxWidth: '200px' }}>
+                              <a href={`https://rinkeby.etherscan.io/tx/${bank_hash}`} target="_blank">
+                                {' '}
+                                {bank_hash}
+                              </a>
+                            </TableCell>
+                            <TableCell align="left" className="text-truncate" style={{ maxWidth: '200px' }}>
+                              <a href={`https://rinkeby.etherscan.io/tx/${service_hash}`} target="_blank">
+                                {' '}
+                                {service_hash}
+                              </a>
+                            </TableCell>
 
-                          <TableCell align="left">
-                            <Label variant="ghost" color={(bank === 'stanbic' && 'warning') || 'success'}>
-                              {sentenceCase(bank)}
-                            </Label>
-                          </TableCell>
+                            <TableCell align="left">
+                              <Label variant="ghost" color={(bank === 'stanbic' && 'warning') || 'success'}>
+                                {sentenceCase(bank)}
+                              </Label>
+                            </TableCell>
 
-                          <TableCell align="right">
-                            <UserMoreMenu />
-                          </TableCell>
-                        </TableRow>
-                      );
+                            <TableCell align="right">
+                              <UserMoreMenu />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
                     })}
                     {emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>

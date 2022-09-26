@@ -53,7 +53,7 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp profile={profile} /> },
         { path: 'user', element: <RecentTransactions profile={profile} /> },
-        { path: 'transactions', element: <RecentTransactions profile={profile} /> },
+        { path: 'transactions', element: <RecentTransactions profile={profile}  /> },
         { path: 'products', element: <Products profile={profile} /> },
         { path: 'ugandapay', element: <Products profile={profile} /> },
         { path: 'blog', element: <Blog profile={profile} /> },

@@ -5,6 +5,18 @@ import Iconify from '../../components/Iconify';
 
 const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
+const userConfig = [
+  {
+    title: 'Uganda Pay',
+    path: '/dashboard/ugandapay',
+    icon: getIcon('eva:shopping-bag-fill'),
+  },
+  {
+    title: 'All Transactions',
+    path: '/dashboard/transactions',
+    icon: getIcon('eva:people-fill'),
+  },
+];
 const navConfig = [
   {
     title: 'dashboard',
@@ -38,4 +50,4 @@ const navConfig = [
   },
 ];
 
-export default navConfig;
+export { userConfig, navConfig };

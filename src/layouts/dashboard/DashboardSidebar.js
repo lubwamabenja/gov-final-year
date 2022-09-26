@@ -13,7 +13,7 @@ import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
-import navConfig from './NavConfig';
+import { navConfig, userConfig } from './NavConfig';
 
 // ----------------------------------------------------------------------
 
@@ -74,12 +74,16 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, profil
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {profile.role ? profile.role.toUpperCase() : ''}
               </Typography>
+
+              {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                {profile.tin ? profile.tin : ''}
+              </Typography> */}
             </Box>
           </AccountStyle>
         </Link>
       </Box>
 
-      <NavSection navConfig={navConfig} />
+      <NavSection navConfig={navConfig} userConfig={userConfig} profile={profile} />
 
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>

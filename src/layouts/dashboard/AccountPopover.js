@@ -47,7 +47,7 @@ export default function AccountPopover({ profile }) {
     localStorage.removeItem('token');
     localStorage.removeItem('i_tin');
     localStorage.removeItem('i_email');
-    windows.location.reload();
+    window.location.reload();
   };
   return (
     <>

@@ -20,6 +20,7 @@ import {
   TablePagination,
   Box,
   CircularProgress,
+  Grid,
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -30,7 +31,18 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
-import { getEntityContract, numberWithCommas } from '../common';
+import { getEntityContract, numberWithCommas, getReconcileContract } from '../common';
+import {
+  AppTasks,
+  AppNewsUpdate,
+  AppOrderTimeline,
+  AppCurrentVisits,
+  AppWebsiteVisits,
+  AppTrafficBySite,
+  AppWidgetSummary,
+  AppCurrentSubject,
+  AppConversionRates,
+} from '../sections/@dashboard/app';
 
 // ----------------------------------------------------------------------
 
@@ -92,6 +104,10 @@ export default function Entities() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [loading, setLoading] = useState(false);
+  const [water, setWater] = useState('');
+  const [umeme, setUmeme] = useState('');
+  const [police, setPolice] = useState('');
+  const [internal, setInternal] = useState('');
 
   // -----------------------GET ALL TRANSACTIONS-----------------------------------------------
   useEffect(() => {
@@ -99,6 +115,23 @@ export default function Entities() {
   }, []);
   const getAllTransactions = () => {
     setLoading(true);
+
+    //=============GET ENTITY TXS============================
+    getReconcileContract()
+      .getEntities()
+      .then((res) => {
+        console.log(res);
+        for (let i = 0; i < res.length; i++) {
+          if (res[i].entity === 'umeme') setUmeme(parseInt(res[i].amount.toString()));
+          if (res[i].entity === 'water') setWater(parseInt(res[i].amount.toString()));
+          if (res[i].entity === 'police') setPolice(parseInt(res[i].amount.toString()));
+          if (res[i].entity === 'internal') setInternal(parseInt(res[i].amount.toString()));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     getEntityContract()
       .getTransactions()
       .then((res) => {
@@ -197,8 +230,43 @@ export default function Entities() {
             Refresh
           </Button>
         </Stack>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="UMEME"
+              money={true}
+              total={umeme}
+              money={true}
+              icon={'ant-design:android-filled'}
+            />
+          </Grid>
 
-        <Card>
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="WATER" total={water} money={true} color="info" icon={'ant-design:apple-filled'} />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="POLICE"
+              total={police}
+              money={true}
+              color="warning"
+              icon={'ant-design:windows-filled'}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="Internal Affairs"
+              total={internal}
+              money={true}
+              color="error"
+              icon={'ant-design:bug-filled'}
+            />
+          </Grid>
+        </Grid>
+
+        <Card className="mt-3">
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
           {loading ? (
@@ -220,58 +288,61 @@ export default function Entities() {
                   />
 
                   <TableBody>
-                    {transactions.map((row) => {
-                      const { id, amount, bank, commision, block, time, date, email, hash, service, state, tin } = row;
-                      const isItemSelected = selected.indexOf(tin) !== -1;
+                    {transactions.reverse().map((row, key) => {
+                      if (key < 8) {
+                        const { id, amount, bank, commision, block, time, date, email, hash, service, state, tin } =
+                          row;
+                        const isItemSelected = selected.indexOf(tin) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, tin)} />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <span>{date}</span>
-                              <span style={{ color: '#ffa500' }}> {time}</span>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left" className="text-truncate" style={{ maxWidth: '150px' }}>
-                            {tin}
-                          </TableCell>
-                          <TableCell align="left">{numberWithCommas(amount)} UGX</TableCell>
-                          <TableCell align="left" className="text-truncate" style={{ maxWidth: '260px' }}>
-                            <a href={`https://rinkeby.etherscan.io/tx/${hash}`} target="_blank">
-                              {' '}
-                              {hash}
-                            </a>
-                          </TableCell>
+                        return (
+                          <TableRow
+                            hover
+                            key={id}
+                            tabIndex={-1}
+                            role="checkbox"
+                            selected={isItemSelected}
+                            aria-checked={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, tin)} />
+                            </TableCell>
+                            <TableCell component="th" scope="row" padding="none">
+                              <Stack direction="row" alignItems="center" spacing={2}>
+                                <span>{date}</span>
+                                <span style={{ color: '#ffa500' }}> {time}</span>
+                              </Stack>
+                            </TableCell>
+                            <TableCell align="left" className="text-truncate" style={{ maxWidth: '150px' }}>
+                              {tin}
+                            </TableCell>
+                            <TableCell align="left">{numberWithCommas(amount)} UGX</TableCell>
+                            <TableCell align="left" className="text-truncate" style={{ maxWidth: '260px' }}>
+                              <a href={`https://rinkeby.etherscan.io/tx/${hash}`} target="_blank">
+                                {' '}
+                                {hash}
+                              </a>
+                            </TableCell>
 
-                          <TableCell align="left" className="text-truncate">
-                            <a href={`https://rinkeby.etherscan.io/block/${block}`} target="_blank">
-                              {' '}
-                              {block}
-                            </a>
-                          </TableCell>
-                          <TableCell align="left"> {sentenceCase(service)}</TableCell>
-                          <TableCell align="left"> {sentenceCase(bank)}</TableCell>
-                          <TableCell align="left">
-                            <Label variant="ghost" color={(state === 'pending' && 'warning') || 'success'}>
-                              {sentenceCase(state)}
-                            </Label>
-                          </TableCell>
+                            <TableCell align="left" className="text-truncate">
+                              <a href={`https://rinkeby.etherscan.io/block/${block}`} target="_blank">
+                                {' '}
+                                {block}
+                              </a>
+                            </TableCell>
+                            <TableCell align="left"> {sentenceCase(service)}</TableCell>
+                            <TableCell align="left"> {sentenceCase(bank)}</TableCell>
+                            <TableCell align="left">
+                              <Label variant="ghost" color={(state === 'pending' && 'warning') || 'success'}>
+                                {sentenceCase(state)}
+                              </Label>
+                            </TableCell>
 
-                          <TableCell align="right">
-                            <UserMoreMenu />
-                          </TableCell>
-                        </TableRow>
-                      );
+                            <TableCell align="right">
+                              <UserMoreMenu />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
                     })}
                     {emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>

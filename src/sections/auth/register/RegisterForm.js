@@ -57,6 +57,7 @@ export default function RegisterForm() {
       .registerUser(fname, lname, md5(password), email, 'user')
       .then((res) => {
         let myuuid = uuidv4();
+        console.log(res);
         getAuthContract()
           .updateTin(myuuid, email)
           .then((res) => {
@@ -65,13 +66,14 @@ export default function RegisterForm() {
             localStorage.setItem('i_tin', myuuid);
             setLoading(false);
             toast.success('Registration Successfully');
+            navigate('/dashboard/ugandapay');
           })
           .catch((err) => {
             console.log(err);
-            toast.error(error.error.reason);
+            // toast.error(error.error.reason);
           });
 
-        navigate('/dashboard/app', { replace: true });
+        // navigate('/dashboard/app', { replace: true });
       })
       .catch((error) => {
         setLoading(false);

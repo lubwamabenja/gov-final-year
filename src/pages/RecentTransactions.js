@@ -39,7 +39,15 @@ const TABLE_HEAD = [
   { id: 'tin', label: 'TIN', alignRight: false },
   { id: 'amount', label: 'Amount', alignRight: false },
   { id: 'hash', label: 'Hash', alignRight: false },
-  { id: 'block', label: 'Block', alignRight: false },
+  { id: 'service', label: 'Service', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
+  { id: '' },
+];
+
+const USER_HEAD = [
+  { id: 'date', label: 'Date', alignRight: false },
+  { id: 'tin', label: 'TIN', alignRight: false },
+  { id: 'amount', label: 'Amount', alignRight: false },
   { id: 'service', label: 'Service', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
@@ -76,7 +84,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function RecentTransactions() {
+export default function RecentTransactions({ profile }) {
   const [page, setPage] = useState(0);
   const [transactions, setTransactions] = useState([]);
 
@@ -212,7 +220,7 @@ export default function RecentTransactions() {
                   <UserListHead
                     order={order}
                     orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
+                    headLabel={profile.user === 'admin' ? TABLE_HEAD : USER_HEAD}
                     rowCount={transactions.length}
                     numSelected={selected.length}
                     onRequestSort={handleRequestSort}
@@ -220,58 +228,61 @@ export default function RecentTransactions() {
                   />
 
                   <TableBody>
-                    {transactions.map((row) => {
+                    {transactions.reverse().map((row, key) => {
                       const { id, amount, bank, commision, time, block, date, email, hash, service, state, tin } = row;
                       const isItemSelected = selected.indexOf(tin) !== -1;
+                      if (key < 8 && profile.tin === tin) {
+                        return (
+                          <TableRow
+                            hover
+                            key={id}
+                            tabIndex={-1}
+                            role="checkbox"
+                            selected={isItemSelected}
+                            aria-checked={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, tin)} />
+                            </TableCell>
+                            <TableCell component="th" scope="row" padding="none">
+                              <Stack direction="row" alignItems="center" spacing={2}>
+                                <span>{date}</span>
+                                <span> {time}</span>
+                              </Stack>
+                            </TableCell>
 
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, tin)} />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <span>{date}</span>
-                              <span> {time}</span>
-                            </Stack>
-                          </TableCell>
+                            <TableCell align="left" className="text-truncate" style={{ maxWidth: '150px' }}>
+                              {tin}
+                            </TableCell>
+                            <TableCell align="left">{numberWithCommas(amount)} UGX</TableCell>
+                            {profile.user === 'admin' && (
+                              <TableCell align="left" className="text-truncate" style={{ maxWidth: '260px' }}>
+                                <a href={`https://rinkeby.etherscan.io/tx/${hash}`} target="_blank">
+                                  {' '}
+                                  {hash}
+                                </a>
+                              </TableCell>
+                            )}
 
-                          <TableCell align="left" className="text-truncate" style={{ maxWidth: '150px' }}>
-                            {tin}
-                          </TableCell>
-                          <TableCell align="left">{numberWithCommas(amount)} UGX</TableCell>
-                          <TableCell align="left" className="text-truncate" style={{ maxWidth: '260px' }}>
-                            <a href={`https://rinkeby.etherscan.io/tx/${hash}`} target="_blank">
-                              {' '}
-                              {hash}
-                            </a>
-                          </TableCell>
+                            {/* <TableCell align="left" className="text-truncate">
+                              <a href={`https://rinkeby.etherscan.io/block/${block}`} target="_blank">
+                                {' '}
+                                {block}
+                              </a>
+                            </TableCell> */}
+                            <TableCell align="left"> {sentenceCase(service)}</TableCell>
+                            <TableCell align="left">
+                              <Label variant="ghost" color={(state === 'pending' && 'warning') || 'success'}>
+                                {sentenceCase(state)}
+                              </Label>
+                            </TableCell>
 
-                          <TableCell align="left" className="text-truncate">
-                            <a href={`https://rinkeby.etherscan.io/block/${block}`} target="_blank">
-                              {' '}
-                              {block}
-                            </a>
-                          </TableCell>
-                          <TableCell align="left"> {sentenceCase(service)}</TableCell>
-                          <TableCell align="left">
-                            <Label variant="ghost" color={(state === 'pending' && 'warning') || 'success'}>
-                              {sentenceCase(state)}
-                            </Label>
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <UserMoreMenu />
-                          </TableCell>
-                        </TableRow>
-                      );
+                            <TableCell align="right">
+                              <UserMoreMenu />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
                     })}
                     {emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>

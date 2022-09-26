@@ -67,8 +67,11 @@ export default function DashboardApp({ profile }) {
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 5 }}>
+        <Typography variant="h4" sx={{ mb: 1 }}>
           Hi <span style={{ color: 'green' }}>{profile.name} </span>, Welcome back
+        </Typography>
+        <Typography variant="h6" sx={{ mb: 5 }}>
+          TIN: <span style={{ color: 'green' }}>{profile.tin} </span>
         </Typography>
 
         <Grid container spacing={3}>
@@ -149,7 +152,7 @@ export default function DashboardApp({ profile }) {
               list={[...Array(5)].map((_, index) => ({
                 id: faker.datatype.uuid(),
                 title: [
-                  '1983, orders, $4220',
+                  '1983 transactions processed',
                   '12 Invoices have been paid',
                   'Order #37745 from September',
                   'New order placed #XF-2356',

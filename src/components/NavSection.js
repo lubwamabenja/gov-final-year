@@ -34,7 +34,7 @@ NavItem.propTypes = {
   active: PropTypes.func,
 };
 
-function NavItem({ item, active }) {
+function NavItem({ item, active, profile }) {
   const theme = useTheme();
 
   const isActiveRoot = active(item.path);
@@ -139,18 +139,26 @@ NavSection.propTypes = {
   navConfig: PropTypes.array,
 };
 
-export default function NavSection({ navConfig, ...other }) {
+export default function NavSection({ userConfig, profile, navConfig, ...other }) {
   const { pathname } = useLocation();
 
   const match = (path) => (path ? !!matchPath({ path, end: false }, pathname) : false);
 
   return (
     <Box {...other}>
-      <List disablePadding sx={{ p: 1 }}>
-        {navConfig.map((item) => (
-          <NavItem key={item.title} item={item} active={match} />
-        ))}
-      </List>
+      {profile.role === 'admin' ? (
+        <List disablePadding sx={{ p: 1 }}>
+          {navConfig.map((item) => (
+            <NavItem key={item.title} item={item} active={match} />
+          ))}
+        </List>
+      ) : (
+        <List disablePadding sx={{ p: 1 }}>
+          {userConfig.map((item) => (
+            <NavItem key={item.title} item={item} active={match} />
+          ))}
+        </List>
+      )}
     </Box>
   );
 }
